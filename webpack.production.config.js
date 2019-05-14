@@ -6,7 +6,7 @@ module.exports = {
     plugins: [
         new webpack.DefinePlugin({
             'process.env': {
-                'NODE_ENV': JSON.stringify('development')
+                'NODE_ENV': JSON.stringify('production')
             }
         }),
 
@@ -15,6 +15,7 @@ module.exports = {
     devtool: 'eval',
     entry: {
         index:'./src/index',
+        admin:'./src/admin',
     },
     output: {
         path: path.join(__dirname, 'public'),
@@ -26,7 +27,9 @@ module.exports = {
             test: /\.jsx?$/,
             exclude: /node_modules/,
             loader: 'babel-loader',
-
+            query: {
+                plugins: ['transform-decorators-legacy']
+            }
         },
             {
                 test: /\.(png|jp(e*)g|svg)$/,
@@ -42,26 +45,7 @@ module.exports = {
                 test: /\.scss$/,
                 include: path.join(__dirname, 'src/assets/scss'),
                 loaders: ["style-loader", "css-loader", "sass-loader"]
-            },
-            {
-                test: /\.css$/,
-                include: /node_modules/,
-                loaders: ['style-loader', 'css-loader'],
             }
         ],
-    },
-
-    devServer: {
-        contentBase: path.join(__dirname, "public"),
-        host: 'localhost',
-        port: 8070,
-        disableHostCheck: true,
-        historyApiFallback: {
-            rewrites: [
-                { from: /^\/$/, to: '/index.html' },
-            ]
-        }
-
     }
-
 };
