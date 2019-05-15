@@ -8,13 +8,6 @@ Change directory to the cloned project with:
 
     cd comapp/
 
-Make .babelrc file
-    
-    {
-      "presets": ["@babel/preset-env", "@babel/preset-react"]
-    }
-    
-
 Build app with:
     
     npm install
