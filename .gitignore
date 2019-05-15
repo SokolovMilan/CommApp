@@ -96,6 +96,7 @@ Thumbs.db
 # -------------------------
 
 # track these files, if they exist
+!.babelrc
 !.gitignore
 !.editorconfig
 !.phpcs.xml.dist
