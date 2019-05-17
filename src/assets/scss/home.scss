@@ -17,28 +17,191 @@
   border: 1px solid lightgray;
   font-size: 16px;
   display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
+  flex-direction: row;
+  justify-content: space-between;
   align-items: flex-start;
-  padding: 10px;
   margin-bottom: 70px;
-
-
-  .list-convers{
-    width: 300px;
-    height: 30px;
+  width: 90%;
+  max-width: 800px;
+  height: 500px;
+  .left-cont{
+    width: 40%;
+    height: 100%;
+    border-right: 1px solid lightgray;
     display: flex;
-    align-items: center;
     justify-content: center;
-    background-color: lightgray;
-    padding: 5px 15px;
-    margin-bottom: 2px;
-    cursor: pointer;
-    &:hover{
-      background-color: gray;
+    align-items: center;
+
+    .left-body{
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: flex-start;
+      .left-header{
+        width: 100%;
+        height: 50px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        border-bottom: 1px solid lightgray;
+        img{
+          width: 30px;
+          cursor: pointer;
+        }
+        .chatImg{
+          border-bottom: 1px solid red;
+        }
+      }
+      .left-search{
+        width: 100%;
+        height: 50px;
+        border-bottom: 1px solid lightgray;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .search-field{
+          border: 1px solid lightgray;
+          border-radius: 5px;
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          width: 80%;
+        }
+        img{
+          padding-left: 8px;
+          width: 15px;
+          transform: rotate(0deg);
+        }
+        input {
+          -webkit-appearance: none;
+          border: none;
+          font-size: 16px;
+          width: 80%;
+          padding: 8px;
+          outline: none;
+
+
+          &::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+            color: black;
+            opacity: .65;/* Firefox */
+            font-size: 14px;
+          }
+
+          &:-ms-input-placeholder { /* Internet Explorer 10-11 */
+            color: white;
+          }
+
+          &:-ms-input-placeholder { /* Microsoft Edge */
+            color: white;
+          }
+        }
+
+      }
+      .left-show{
+        position: relative;
+        width: 100%;
+        height: 400px;
+        overflow-y: auto;
+        overflow-x: none;
+
+
+
+        .left-convers{
+          position: absolute;
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
+          align-items: center;
+
+          .favorites{
+            width: 95%;
+            height: 30px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            padding-left: 10px;
+            font-size: 12px;
+            color: gray;
+            border-bottom: 1px dotted lightgray;
+
+          }
+
+
+          .list{
+            width: 100%;
+            height: 70px;
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            justify-content: flex-start;
+            cursor: pointer;
+            border-bottom: 1px solid lightgray;
+            &:hover{
+              background-color: lightgray;
+            }
+            .list-image{
+              width: 70px;
+              height: 70px;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+            }
+            .list-contacts{
+              width: calc(100% - 50px);
+              height: 70px;
+              display: flex;
+              flex-direction: column;
+              align-items: flex-start;
+              justify-content: flex-start;
+              padding-left: 10px;
+              .contact-name{
+                font-size: 16px;
+
+              }
+              .contact-detail{
+                font-size: 14px;
+
+              }
+
+            }
+
+          }
+
+        }
+        .left-result{
+          position: absolute;
+          display: none;
+          width: 100%;
+
+
+        }
+
+      }
+
     }
 
   }
+
+  .right-cont{
+    width: 60%;
+    .right-body{
+      width: 100%;
+
+      .right-chat{
+        width: 100%;
+        height: 500px;
+
+      }
+
+    }
+  }
+
+
+
+
 
 
 

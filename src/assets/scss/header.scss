@@ -7,13 +7,13 @@
 .head-container {
     position: relative;
     background-color: lightgray;
-    max-width: 800px;
+    max-width: 1000px;
     padding-left: 10px;
     padding-right: 10px;
     height: 40px;
     margin: auto;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
 }
 
