@@ -22,7 +22,7 @@ module.exports = {
         publicPath: '/'
     },
     module: {
-        loaders: [{
+        rules: [{
             test: /\.jsx?$/,
             exclude: /node_modules/,
             loader: 'babel-loader',
@@ -41,12 +41,12 @@ module.exports = {
             {
                 test: /\.scss$/,
                 include: path.join(__dirname, 'src/assets/scss'),
-                loaders: ["style-loader", "css-loader", "sass-loader"]
+                use: ["style-loader", "css-loader", "sass-loader"]
             },
             {
                 test: /\.css$/,
                 include: /node_modules/,
-                loaders: ['style-loader', 'css-loader'],
+                use: ['style-loader', 'css-loader'],
             }
         ],
     },

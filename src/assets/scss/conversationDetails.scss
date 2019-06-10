@@ -1,0 +1,30 @@
+.conversation-details{
+  background-color: lightgray;
+  display: none;
+  width: 100%;
+  height: 100%;
+  button{
+    margin-top: 50px;
+  }
+  overflow-y: auto;
+
+  .items-cont{
+    list-style-type: square;
+    .items{
+      margin-top: 10px;
+    }
+
+    .deleteitem{
+      padding: 5px 10px;
+      margin-left: 15px;
+      cursor: pointer;
+      &:hover{
+        background-color: gray;
+      }
+    }
+
+
+  }
+
+
+}

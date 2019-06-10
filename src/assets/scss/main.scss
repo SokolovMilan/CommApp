@@ -3,9 +3,15 @@
 @import "home.scss";
 @import "header.scss";
 @import "searchResult";
+@import "contacts";
+@import "conversations";
+@import "contactDetails";
+@import "conversationDetails";
+@import "chat";
 
 body{
   width: 100%;
+  min-width: 1000px !important;
   padding: 0;
   margin: 0 auto;
   font-size: 16px;

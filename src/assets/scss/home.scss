@@ -7,6 +7,7 @@
   justify-content: center;
   text-align: center;
 
+
 }
 .home-head{
   font-size: 32px;
@@ -22,17 +23,17 @@
   align-items: flex-start;
   margin-bottom: 70px;
   width: 90%;
-  max-width: 800px;
+  max-width: 1000px;
   height: 500px;
   .left-cont{
-    width: 40%;
+    min-width: 300px !important;
     height: 100%;
     border-right: 1px solid lightgray;
     display: flex;
     justify-content: center;
     align-items: center;
 
-    .left-body{
+    .left-main{
       width: 100%;
       display: flex;
       flex-direction: column;
@@ -98,86 +99,12 @@
         }
 
       }
-      .left-show{
+      .left-body{
         position: relative;
         width: 100%;
         height: 400px;
         overflow-y: auto;
-        overflow-x: none;
 
-
-
-        .left-convers{
-          position: absolute;
-          width: 100%;
-          display: flex;
-          flex-direction: column;
-          justify-content: flex-start;
-          align-items: center;
-
-          .favorites{
-            width: 95%;
-            height: 30px;
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            padding-left: 10px;
-            font-size: 12px;
-            color: gray;
-            border-bottom: 1px dotted lightgray;
-
-          }
-
-
-          .list{
-            width: 100%;
-            height: 70px;
-            display: flex;
-            flex-direction: row;
-            align-items: flex-start;
-            justify-content: flex-start;
-            cursor: pointer;
-            border-bottom: 1px solid lightgray;
-            &:hover{
-              background-color: lightgray;
-            }
-            .list-image{
-              width: 70px;
-              height: 70px;
-              display: flex;
-              flex-direction: column;
-              align-items: center;
-              justify-content: center;
-            }
-            .list-contacts{
-              width: calc(100% - 50px);
-              height: 70px;
-              display: flex;
-              flex-direction: column;
-              align-items: flex-start;
-              justify-content: flex-start;
-              padding-left: 10px;
-              .contact-name{
-                font-size: 16px;
-
-              }
-              .contact-detail{
-                font-size: 14px;
-
-              }
-
-            }
-
-          }
-
-        }
-        .left-result{
-          position: absolute;
-          display: none;
-          width: 100%;
-
-
-        }
 
       }
 
@@ -186,13 +113,14 @@
   }
 
   .right-cont{
-    width: 60%;
+    width: calc(100% - 300px);
     .right-body{
       width: 100%;
 
       .right-chat{
         width: 100%;
         height: 500px;
+        //overflow-y: hidden;
 
       }
 

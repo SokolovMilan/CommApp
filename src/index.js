@@ -1,28 +1,26 @@
 import React from "react";
-import ReactDOM from "react-dom";
-import {applyMiddleware, createStore} from "redux";
+import { render } from 'react-dom'
+import {applyMiddleware, compose, createStore} from "redux";
 import thunk from "redux-thunk";
 import reducer from "./reducers/rootReducer";
 import { Provider } from "react-redux";
-import { Router, Route, Switch } from 'react-router-dom';
-import history from './util/history'
+import { BrowserRouter as Router, Route} from "react-router-dom";
 import Header from "./components/Header";
 import HomePage from "./components/HomePage";
 
-const store = createStore(reducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
-    applyMiddleware(thunk));
+const composeEnhancer = compose;
+//window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+const store = createStore(
+    reducer,
+    composeEnhancer(applyMiddleware(thunk)),
+);
 
-
-
-ReactDOM.render(
+render(
     <Provider store={store}>
-        <Router history={history}>
+        <Router>
             <div>
                 <Header/>
-                <Switch>
-                    <Route exact path="/" component={HomePage} />
-
-                </Switch>
+                <Route path="/" exact component={HomePage} />
             </div>
     </Router>
 </Provider>, document.getElementById('root'));

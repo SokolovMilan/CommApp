@@ -1,68 +1,98 @@
 import React, { Component } from 'react';
 import {connect} from "react-redux";
 import history from '../util/history';
-import {getConversations} from "../actions/conversations";
-import SeachResult from "./SearchResult";
+import {getSearchResults} from "../actions/searchResults";
+import {ShowImage} from "./Functions/functions";
+
+import Contacts from "./Contacts";
+import Conversations from "./Conversations";
+import SearchResults from "./SearchResults";
+import ContactDetails from "./ContactDetails";
+import ConversationDetails from "./ConversationDetails";
+import Chat from "./Chat";
+
 const mapDispatchToProps = (dispatch) => {
     return {
-        getConversations: () => dispatch(getConversations()),
+        getSearchResults: () => dispatch(getSearchResults()),
     }
 };
 const mapStateToProps = (state) => {
     return {
-        conversations: state.conversationsReducer.allConversations,
     };
 };
+const imageSrc = require('./Functions/imageSrc');
+
+
 
 class HomePage extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
+            selectedUser: "",
+            selectedConversation: "",
+            searchTerm: ""
 
         };
-        this.chooseConversation = this.chooseConversation.bind(this);
+
         this.search = this.search.bind(this);
-        this.gotoChat = this.gotoChat.bind(this);
+        this.gotoConversations = this.gotoConversations.bind(this);
         this.gotoContacts = this.gotoContacts.bind(this);
-    }
-    componentDidMount(){
-        this.props.getConversations();
+        this.selectedContact = this.selectedContact.bind(this);
+        this.selectedConversation = this.selectedConversation.bind(this);
     }
 
-    chooseConversation(index){
-        console.log(index);
-    }
+
     search(e) {
+        this.props.getSearchResults();
+        console.log("uneti termin za pretragu je "+e.target.value.toLowerCase());
+        this.setState({
+           searchTerm:  e.target.value.toLowerCase()
+        });
+
         let index = e.target.value;
         let result = document.getElementById("result");
         let convers = document.getElementById("convers");
+        let contact = document.getElementById("contact");
         let contactImg = document.getElementById("contactImg");
         let chatImg = document.getElementById("chatImg");
+        let convDet = document.getElementById("convers-det");
+        let chat = document.getElementById("chat");
+        let contDet = document.getElementById("cont-det");
 
+        contDet.style.display = 'none';
+        convDet.style.display = 'none';
+        chat.style.visibility = 'visible';
+        contactImg.style.borderBottom = '1px solid red';
+        chatImg.style.borderBottom = 'none';
 
         if(index.length == 0){
             result.style.display = 'none';
-            convers.style.display = 'block';
-            contactImg.style.borderBottom = 'none';
-            chatImg.style.borderBottom = '1px solid red';
+            convers.style.display = 'none';
+            contact.style.display = 'block';
         }else{
             result.style.display = 'block';
+            contact.style.display = 'none';
             convers.style.display = 'none';
-            contactImg.style.borderBottom = '1px solid red';
-            chatImg.style.borderBottom = 'none';
         }
 
-        console.log(index);
     }
-    gotoChat(){
+    gotoConversations(){
         let result = document.getElementById("result");
         let convers = document.getElementById("convers");
+        let contact = document.getElementById("contact");
         let search = document.getElementById("search");
         let contactImg = document.getElementById("contactImg");
         let chatImg = document.getElementById("chatImg");
+        let convDet = document.getElementById("convers-det");
+        let chat = document.getElementById("chat");
+        let contDet = document.getElementById("cont-det");
 
+        contDet.style.display = 'none';
+        convDet.style.display = 'none';
+        chat.style.visibility = 'visible';
         result.style.display = 'none';
+        contact.style.display = 'none';
         convers.style.display = 'block';
         search.value = "";
         contactImg.style.borderBottom = 'none';
@@ -72,13 +102,35 @@ class HomePage extends Component {
     gotoContacts(){
         let result = document.getElementById("result");
         let convers = document.getElementById("convers");
+        let contact = document.getElementById("contact");
+        let search = document.getElementById("search");
         let contactImg = document.getElementById("contactImg");
         let chatImg = document.getElementById("chatImg");
+        let convDet = document.getElementById("convers-det");
+        let chat = document.getElementById("chat");
+        let contDet = document.getElementById("cont-det");
 
-        result.style.display = 'block';
+        contDet.style.display = 'none';
+        convDet.style.display = 'none';
+        chat.style.visibility = 'visible';
+        contact.style.display = 'block';
         convers.style.display = 'none';
+        result.style.display = 'none';
+        search.value = "";
         contactImg.style.borderBottom = '1px solid red';
         chatImg.style.borderBottom = 'none';
+    }
+
+    selectedContact(item){
+        this.setState({
+            selectedUser: item
+        })
+    }
+
+    selectedConversation(item){
+        this.setState({
+            selectedConversation: item,
+        })
     }
 
     render() {
@@ -88,68 +140,40 @@ class HomePage extends Component {
                 </div>
                 <div className="home-body">
                     <div className="left-cont">
-                        <div className="left-body">
+                        <div className="left-main">
                             <div className="left-header">
-                                <div onClick={this.gotoChat} className="chatImg" id="chatImg">
-                                    <img src={require("../assets/images/chat.png")} />
+                                <div onClick={this.gotoConversations} className="chatImg" id="chatImg">
+                                    <ShowImage src={imageSrc.chatIcon} width="50px"/>
                                 </div>
                                 <div onClick={this.gotoContacts} className="contactImg" id="contactImg">
-                                    <img src={require("../assets/images/user.png")} />
+                                    <ShowImage src={imageSrc.userIcon} width="50px"/>
                                 </div>
                             </div>
                             <div className="left-search">
                                 <div className="search-field">
-                                    <img src={require("../assets/images/search.png")} />
+                                    <ShowImage src={imageSrc.searchIcon} width="50px"/>
                                     <input type="search" placeholder="Search contacts"
                                            id="search" onChange={this.search}/>
                                 </div>
-
-
-
                             </div>
-                            <div className="left-show">
-                                <div className="left-convers" id="convers">
-                                    <div className="favorites">
-                                        <div>Favorites:</div>
-                                    </div>
-                                    { (this.props.conversations != null) ?
-                                        this.props.conversations.map((item, index) =>
-                                            <div className="list" key={item.id}
-                                                 onClick={ () => {this.chooseConversation(index)}}>
-                                                <div className="list-image">
-                                                    <img src={require("../assets/images/user3.png")} width="50px"/>
+                            <div className="left-body">
+                                    <Conversations selectedId={this.selectedConversation}/>
 
-                                                </div>
-                                                <div className="list-contacts">
-                                                    <div className="contact-name">
-                                                        {item.username}
-                                                    </div>
-                                                    <div className="contact-detail">
-                                                        {item.name}
-                                                    </div>
-                                                </div>
+                                    <Contacts selectedId={this.selectedContact}/>
 
-                                            </div>
-                                        ): console.log('error')
-
-                                    }
-                                </div>
-                                <div className="left-result" id="result">
-                                    <SeachResult/>
-                                </div>
+                                    <SearchResults searchTerm={this.state.searchTerm}/>
                             </div>
-
-
                         </div>
                     </div>
                     <div className="right-cont">
                         <div className="right-body">
-                            <div className="right-chat">
-                                place for chat
+                            <div className="right-chat" id="right-chat">
+                                <ContactDetails selectedUser={this.state.selectedUser}/>
+                                <ConversationDetails selectedConversation={this.state.selectedConversation}/>
+                                <Chat />
                             </div>
                         </div>
                     </div>
-
 
                 </div>
 

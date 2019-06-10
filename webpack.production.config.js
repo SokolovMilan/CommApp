@@ -1,4 +1,4 @@
-path = require('path');
+const path = require('path');
 const webpack = require('webpack');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
@@ -14,8 +14,7 @@ module.exports = {
     ],
     devtool: 'eval',
     entry: {
-        index:'./src/index',
-        admin:'./src/admin',
+        index:'./src/index'
     },
     output: {
         path: path.join(__dirname, 'public'),
@@ -23,13 +22,10 @@ module.exports = {
         publicPath: '/'
     },
     module: {
-        loaders: [{
+        rules: [{
             test: /\.jsx?$/,
             exclude: /node_modules/,
-            loader: 'babel-loader',
-            query: {
-                plugins: ['transform-decorators-legacy']
-            }
+            loader: 'babel-loader'
         },
             {
                 test: /\.(png|jp(e*)g|svg)$/,
