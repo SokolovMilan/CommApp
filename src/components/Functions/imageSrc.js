@@ -6,6 +6,7 @@ const imageSrc = {
     chatIcon: require('../../assets/images/chat.png'),
     searchIcon: require('../../assets/images/search.png'),
     plusSign: require('../../assets/images/plus.png'),
+    fileIcon: require('../../assets/images/file-icon.png'),
 
 }
 module.exports = imageSrc;

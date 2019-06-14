@@ -4,9 +4,7 @@ module.exports = {
     chatText: 'CHAT_TEXT',
     getContacts: 'GET_CONTACTS',
     getSearchResults: 'GET_SEARCH_RESULTS',
-    fileUpload: 'FILE_UPLOAD'
-
-
-
+    fileUpload: 'FILE_UPLOAD',
+    newChat: 'NEW_CHAT'
 
 };

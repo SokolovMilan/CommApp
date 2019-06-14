@@ -8,12 +8,15 @@ import { BrowserRouter as Router, Route} from "react-router-dom";
 import Header from "./components/Header";
 import HomePage from "./components/HomePage";
 
+
 const composeEnhancer = compose;
 //window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 const store = createStore(
     reducer,
     composeEnhancer(applyMiddleware(thunk)),
 );
+
+
 
 render(
     <Provider store={store}>

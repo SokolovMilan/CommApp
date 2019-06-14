@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import {connect} from "react-redux";
 import history from '../util/history';
+import { Link } from 'react-router-dom';
 import {sendChat} from "../actions/chat";
 import {ShowImage} from "./Functions/functions";
-
+import FileReader from "./FileReader";
+import { ClipLoader } from 'react-spinners';
 import {storage} from '../firebase';
 
 
@@ -26,10 +28,12 @@ class Chat extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            loading: false
 
         };
         this.sendChat = this.sendChat.bind(this);
         this.add = this.add.bind(this);
+        this.showImage = this.showImage.bind(this);
     }
 
 
@@ -42,40 +46,48 @@ class Chat extends Component {
         if(input.value.length < 1){
             console.log('please enter text')
         }else{
-            console.log('uneti text je '+input.value);
             this.props.chat(input.value);
             input.value = "";
         }
 
     }
     add(e){
-        console.log('add file ');
-
         let body = document.getElementById("chat-body");
         body.scrollTop =  body.scrollHeight;
 
-        const file = new FormData();
-        file.append('file', e.target.files[0], e.target.files[0].name);
-        //need action to send file to database!!!
-
+        this.setState({
+            loading: true
+        })
 
         //testing with firebase
-        const upload = storage.ref(`${e.target.files[0].name}`).put(e.target.files[0]);
-
-
-        //check if file is image
+        //check file type
         let filePath = e.target.files[0].type;
-            let res = filePath.split('/')[0];
-            if(res == 'image'){
-                console.log('type is image');
-                const reader  = new FileReader();
-                reader.readAsDataURL(e.target.files[0]);
-                reader.onload = (e) => {
-                    const img = new Image();
-                    img.src = reader.result;
-                    //document.getElementById('test').appendChild(img);
+        let res = filePath.split('/')[0];
 
-                }
+        if(res == 'image'){
+            console.log('add file, type is image');
+            const upload = storage.ref(`images/${e.target.files[0].name}`).put(e.target.files[0]);
+
+
+            upload.on('state_changed',
+                    (snapshot) => {
+                        //progress
+                    },
+                    (error) => {
+                        console.log(error)
+                    },
+                    () => {
+                        upload.snapshot.ref.getDownloadURL().then((url) => {
+                            this.props.chat(url);
+                        });
+                        this.setState({
+                            loading: false
+                        })
+                    }
+            );
+        }else{
+                console.log('add file, type is text/application');
+                const upload = storage.ref(`files/${e.target.files[0].name}`).put(e.target.files[0]);
 
                 upload.on('state_changed',
                     (snapshot) => {
@@ -87,18 +99,20 @@ class Chat extends Component {
                     () => {
                         upload.snapshot.ref.getDownloadURL().then((url) => {
                             this.props.chat(url);
+                        });
+                        this.setState({
+                            loading: false
                         })
                     }
                 );
-
-
-            }else if(res == 'text'){
-                console.log('type is text');
-                this.props.chat(e.target.files[0].name);
-            }
-
+        }
 
     }
+    showImage(e){
+        let url = e.currentTarget.getAttribute('data-url');
+         window.open(url, '_blank');
+    }
+
     render() {
         return (
             <div className="chat-cont" id="chat">
@@ -110,7 +124,6 @@ class Chat extends Component {
                                 :
                                 <div>Default</div>
                             }
-
                         </div>
                         <div className="user-online">
                             Online
@@ -129,14 +142,25 @@ class Chat extends Component {
                         <div className="chat-right-cont">
                             <ShowImage src={imageSrc.userMan} width="30px"/>
                             <div className="text-right">
-
                                 {this.props.text.map((item, index) =>
                                     <div key={index} >
-
-                                            {
+                                        {
                                                 (item.split('.')[0]
                                                     == 'https://firebasestorage')?
-                                                    <img src={item} width="200px"/>
+                                                    (item.split('%')[0]
+                                                        == 'https://firebasestorage.googleapis.com/v0/b/commapp-95caf.appspot.com/o/images')
+                                                        ?
+                                                        <img src={item} width="200px"
+                                                             onClick={this.showImage}
+                                                             data-url={item}
+                                                             className="firebaseImg"
+                                                        />
+                                                        :
+                                                        <div>
+                                                            <FileReader
+                                                                url={item}
+                                                            />
+                                                        </div>
                                                     :
                                                     <div className="single-text" >
                                                         {item}
@@ -146,6 +170,16 @@ class Chat extends Component {
 
                                     </div>
                                 )
+                                }
+                                {
+                                    (this.state.loading)?
+                                        <ClipLoader
+                                            sizeUnit={"px"}
+                                            size={20}
+                                            color={'#123abc'}
+                                            loading={this.state.loading}
+                                        />
+                                        :console.log('no loader')
                                 }
                             </div>
                         </div>
