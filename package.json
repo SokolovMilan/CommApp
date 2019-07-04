@@ -13,7 +13,6 @@
     "axios": "^0.18.0",
     "babel-cli": "^6.26.0",
     "firebase": "^6.1.1",
-    "flightplan": "^0.6.19",
     "history": "^4.9.0",
     "image-webpack-loader": "^4.6.0",
     "node-sass": "^4.12.0",

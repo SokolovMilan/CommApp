@@ -2,22 +2,23 @@ import React, { Component } from 'react';
 import {connect} from "react-redux";
 import history from '../util/history';
 import { Link } from 'react-router-dom';
-import {sendChat} from "../actions/chat";
 import {ShowImage} from "./Functions/functions";
 import FileReader from "./FileReader";
 import { ClipLoader } from 'react-spinners';
 import {storage} from '../firebase';
-
-
+import socketEmitFunctions from '../util/socketEmitFunctions';
+import {saveChat} from "../actions/chat";
 const mapDispatchToProps = (dispatch) => {
     return {
-        chat: (data) => dispatch(sendChat(data)),
+        saveChat: (data) => dispatch(saveChat(data)),
     }
 };
 const mapStateToProps = (state) => {
     return {
-        item: state.chatReducer.choosedChat,
-        text: state.chatReducer.chatText,
+        text: state.chatReducer.chatMessages,
+        chatId: state.chatReducer.chatId,
+        selectedChat: state.chatReducer.selectedChat,
+        myId: state.registerReducer.myId,
 
     };
 };
@@ -28,36 +29,55 @@ class Chat extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            loading: false
-
+            loading: false,
+            body: "",
+            chat_id: "",
+            user_id: localStorage.getItem('myId')
         };
         this.sendChat = this.sendChat.bind(this);
         this.add = this.add.bind(this);
+        this.message = this.message.bind(this);
         this.showImage = this.showImage.bind(this);
     }
 
-
+    componentWillUnmount() {
+        socketEmitFunctions.notifyUserLeaveToChat(this.props.chatId);
+    }
     sendChat(e){
         e.preventDefault();
         let input = document.getElementById("chat-input");
         let body = document.getElementById("chat-body");
-        //body.scrollTop = body.scrollHeight - body.clientHeight;
-        body.scrollTop =  body.scrollHeight;
+        if(this.props.selectedChat == null){
+            alert("Choose chat please!");
+            return;
+        }
         if(input.value.length < 1){
             console.log('please enter text')
         }else{
-            this.props.chat(input.value);
+            this.props.saveChat(this.state);
             input.value = "";
+
+            setTimeout(() => {
+                body.scrollTop =  body.scrollHeight;
+            }, 100);
         }
 
     }
-    add(e){
-        let body = document.getElementById("chat-body");
-        body.scrollTop =  body.scrollHeight;
+
+    message(e){
+        e.preventDefault();
+        let input = document.getElementById("chat-input");
 
         this.setState({
+            body: input.value,
+            chat_id: this.props.chatId
+        });
+    }
+    add(e){
+        let body = document.getElementById("chat-body");
+        this.setState({
             loading: true
-        })
+        });
 
         //testing with firebase
         //check file type
@@ -68,7 +88,6 @@ class Chat extends Component {
             console.log('add file, type is image');
             const upload = storage.ref(`images/${e.target.files[0].name}`).put(e.target.files[0]);
 
-
             upload.on('state_changed',
                     (snapshot) => {
                         //progress
@@ -78,7 +97,15 @@ class Chat extends Component {
                     },
                     () => {
                         upload.snapshot.ref.getDownloadURL().then((url) => {
-                            this.props.chat(url);
+                            let data = {
+                                "chat_id": this.props.chatId,
+                                "user_id": this.state.user_id,
+                                "body": url
+                            }
+                            this.props.saveChat(data);
+                            setTimeout(() => {
+                                body.scrollTop =  body.scrollHeight;
+                            }, 500);
                         });
                         this.setState({
                             loading: false
@@ -98,7 +125,15 @@ class Chat extends Component {
                     },
                     () => {
                         upload.snapshot.ref.getDownloadURL().then((url) => {
-                            this.props.chat(url);
+                            let data = {
+                                "chat_id": this.props.chatId,
+                                "user_id": this.state.user_id,
+                                "body": url
+                            }
+                            this.props.saveChat(data);
+                            setTimeout(() => {
+                                body.scrollTop =  body.scrollHeight;
+                            }, 500);
                         });
                         this.setState({
                             loading: false
@@ -106,7 +141,6 @@ class Chat extends Component {
                     }
                 );
         }
-
     }
     showImage(e){
         let url = e.currentTarget.getAttribute('data-url');
@@ -119,55 +153,79 @@ class Chat extends Component {
                 <div className="chat-header">
                     <div className="user-details">
                         <div className="user-name">
-                            {(this.props.item != null)
-                                ? this.props.item.username
+                            {(this.props.selectedChat != null)
+                                ? <div>User id: {this.props.selectedChat}</div>
                                 :
                                 <div>Default</div>
                             }
                         </div>
-                        <div className="user-online">
-                            Online
+                        <div className="user-status">
+
                         </div>
                     </div>
                 </div>
                 <div className="chat-body" id="chat-body">
-                    <div className="chat-left-cont">
-                        <ShowImage src={imageSrc.user3Icon} width="30px"/>
-                        <div className="text-left">
-                            <div className="single-text">Hi</div>
-                        </div>
-
-                    </div>
                     {(this.props.text.length > 0) ?
-                        <div className="chat-right-cont">
-                            <ShowImage src={imageSrc.userMan} width="30px"/>
-                            <div className="text-right">
+                        <div>
                                 {this.props.text.map((item, index) =>
                                     <div key={index} >
-                                        {
-                                                (item.split('.')[0]
-                                                    == 'https://firebasestorage')?
-                                                    (item.split('%')[0]
-                                                        == 'https://firebasestorage.googleapis.com/v0/b/commapp-95caf.appspot.com/o/images')
-                                                        ?
-                                                        <img src={item} width="200px"
-                                                             onClick={this.showImage}
-                                                             data-url={item}
-                                                             className="firebaseImg"
-                                                        />
-                                                        :
-                                                        <div>
-                                                            <FileReader
-                                                                url={item}
-                                                            />
-                                                        </div>
-                                                    :
-                                                    <div className="single-text" >
-                                                        {item}
-                                                    </div>
-
+                                        {(item.user_id == this.props.myId)?
+                                            <div className="chat-right-cont">
+                                                User: {item.user_id}
+                                                <div className="text-right">
+                                                    {
+                                                        (item.body.split('.')[0]
+                                                            == 'https://firebasestorage')?
+                                                            (item.body.split('%')[0]
+                                                                == 'https://firebasestorage.googleapis.com/v0/b/commapp-95caf.appspot.com/o/images')
+                                                                ?
+                                                                <img src={item.body} width="200px"
+                                                                     onClick={this.showImage}
+                                                                     data-url={item.body}
+                                                                     className="firebaseImg"
+                                                                />
+                                                                :
+                                                                <div>
+                                                                    <FileReader
+                                                                        url={item.body}
+                                                                    />
+                                                                </div>
+                                                            :
+                                                            <div className="single-text" >
+                                                                {item.body}
+                                                            </div>
+                                                    }
+                                                </div>
+                                            </div>
+                                            :
+                                            <div className="chat-left-cont">
+                                                User: {item.user_id}
+                                                <div className="text-left">
+                                                    {
+                                                        (item.body.split('.')[0]
+                                                            == 'https://firebasestorage')?
+                                                            (item.body.split('%')[0]
+                                                                == 'https://firebasestorage.googleapis.com/v0/b/commapp-95caf.appspot.com/o/images')
+                                                                ?
+                                                                <img src={item.body} width="200px"
+                                                                     onClick={this.showImage}
+                                                                     data-url={item.body}
+                                                                     className="firebaseImg"
+                                                                />
+                                                                :
+                                                                <div>
+                                                                    <FileReader
+                                                                        url={item.body}
+                                                                    />
+                                                                </div>
+                                                            :
+                                                            <div className="single-text" >
+                                                                {item.body}
+                                                            </div>
+                                                    }
+                                                </div>
+                                            </div>
                                             }
-
                                     </div>
                                 )
                                 }
@@ -181,7 +239,6 @@ class Chat extends Component {
                                         />
                                         :console.log('no loader')
                                 }
-                            </div>
                         </div>
                         :
                         console.log('no text jet')
@@ -198,7 +255,8 @@ class Chat extends Component {
                         </div>
 
                         <input type="text" id="chat-input"
-                               placeholder="Type message"/>
+                               placeholder="Type message"
+                        onChange={this.message}/>
 
                         <button className="send" onClick={this.sendChat} >Send</button>
                     </form>

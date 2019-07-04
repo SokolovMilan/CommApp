@@ -1,5 +1,5 @@
 .chat-cont{
-  visibility: visible;
+  visibility: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -23,7 +23,7 @@
       .user-name{
         font-size: 16px;
       }
-      .user-online{
+      .user-status{
         font-size: 12px;
       }
     }
@@ -32,7 +32,8 @@
     width: 100%;
     height: calc(100% - 120px);
     overflow-y: auto;
-    padding-top: 20px;
+    padding-top: 10px;
+    padding-bottom: 50px;
 
     .chat-left-cont{
       width: 98%;
@@ -48,6 +49,37 @@
         flex-direction: column;
         align-items:flex-start;
         justify-content: flex-start;
+        .firebaseImg{
+          cursor: pointer;
+        }
+        .fileReader{
+          background-color: lightgray;
+          padding: 7px 15px;
+          margin: 2px;
+          border-radius: 10px;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+          cursor: pointer;
+          &:first-child {
+            border-radius: 0px 10px 10px 10px;
+          }
+          img{
+            vertical-align: bottom;
+            margin-right: 20px;
+          }
+          .details{
+            display: flex;
+            flex-direction: column;
+            align-items:center;
+            justify-content: center;
+            .size{
+              opacity: 0.4;
+            }
+          }
+
+        }
         .single-text{
           background-color: lightgray;
           padding: 3px 15px;
@@ -58,7 +90,6 @@
           }
         }
       }
-
     }
     .chat-right-cont{
       width: 98%;
@@ -68,12 +99,13 @@
       flex-direction: row-reverse;
       align-items:flex-start;
       justify-content: flex-start;
+
       .text-right{
         display: flex;
         flex-direction: column;
         align-items:flex-end;
         justify-content: flex-start;
-        padding-bottom: 50px;
+        padding-bottom: 5px;
           .firebaseImg{
             cursor: pointer;
           }
@@ -103,7 +135,6 @@
                 opacity: 0.4;
               }
             }
-
           }
           .single-text{
             background-color: lightgray;
@@ -114,13 +145,8 @@
               border-radius: 10px 0px 10px 10px;
             }
           }
-
-
       }
-
     }
-
-
   }
   .chat-footer{
     background-color: lightgray;

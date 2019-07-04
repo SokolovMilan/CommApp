@@ -1,17 +1,23 @@
 import React, { Component } from 'react';
 import {connect} from "react-redux";
 import history from '../util/history';
-import {getContacts} from "../actions/contacts";
 import {ShowImage} from "./Functions/functions";
+import {getUsers} from "../actions/contacts";
+import {makeChat, selectedConversation, clearChat} from "../actions/chat";
+
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        getContacts: () => dispatch(getContacts()),
+        getUsers: () => dispatch(getUsers()),
+        makeChat: (data) => dispatch(makeChat(data)),
+        selectedConversation: (data) => dispatch(selectedConversation(data)),
+        clearChat: () => dispatch(clearChat()),
     }
 };
 const mapStateToProps = (state) => {
     return {
-        contacts: state.contactsReducer.allContacts,
+        contacts: state.contactsReducer.listUsers,
+        selectedChat: state.chatReducer.selectedChat,
     };
 };
 const imageSrc = require('./Functions/imageSrc');
@@ -25,41 +31,68 @@ class Contacts extends Component {
         };
         this.chooseContact = this.chooseContact.bind(this);
         this.details = this.details.bind(this);
+        this.addUser = this.addUser.bind(this);
     }
 
     componentDidMount(){
-        this.props.getContacts();
+        this.props.getUsers();
     }
 
     chooseContact(item){
-        console.log("selected contact id is "+item.id);
+        //need action to load all chat text from backend
+
+        if(this.props.selectedChat != item) {
+            this.props.selectedConversation(item);
+            this.props.clearChat();
+            this.props.makeChat(item);
+        }
+
         let contDet = document.getElementById("cont-det");
+        let addUser = document.getElementById("add-user");
         let chat = document.getElementById("chat");
+        let defaultScreen = document.getElementById("default-screen");
+
+        defaultScreen.style.display = 'none';
         contDet.style.display = 'none';
+        addUser.style.display = 'none';
         chat.style.visibility = 'visible';
 
     }
     details(item){
         let contDet = document.getElementById("cont-det");
+        let addUser = document.getElementById("add-user");
         let chat = document.getElementById("chat");
         let rightchat = document.getElementById("right-chat");
+
         contDet.style.display = 'block';
+        addUser.style.display = 'none';
         chat.style.visibility = 'hidden';
         rightchat.style.overflow = 'hidden';
         this.props.selectedId(item);
-        console.log("choose details "+item.id);
+        console.log("choose details of user "+item);
     }
 
+    addUser(){
+        let addUser = document.getElementById("add-user");
+        let contDet = document.getElementById("cont-det");
+        let chat = document.getElementById("chat");
+        let rightchat = document.getElementById("right-chat");
+
+        addUser.style.display = 'block';
+        contDet.style.display = 'none';
+        rightchat.style.overflow = 'hidden';
+    }
 
     render() {
         return (
             <div className="left-contact-main" id="contact">
                         <div className="head">
                             <div className="head-title">CONTACTS</div>
+                            <div onClick={ () => {this.addUser()}} className="head-add">ADD USER</div>
                         </div>
                         { (true) ?
                             (this.props.contacts != null) ?
-                                this.props.contacts.sort((a, b) => (a.name > b.name) ? 1 : -1).map((item, index) =>
+                                this.props.contacts.map((item, index) =>
                                     <div className="contact-cont" key={index}>
                                         <div className="left-contact" key={item.id}
                                              onClick={ () => {this.chooseContact(item)}}>
@@ -68,12 +101,9 @@ class Contacts extends Component {
                                             </div>
                                             <div className="list-contacts">
                                                 <div className="contact-detail">
-                                                    {item.name}
+                                                    User_id: {item}
                                                 </div>
-                                                <div className="list-details"
-                                                     onClick={ () => {this.details(item)}}>
-                                                    Details
-                                                </div>
+
                                             </div>
 
                                         </div>

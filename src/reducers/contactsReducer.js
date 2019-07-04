@@ -1,11 +1,11 @@
 let eventTypes = require('../../config/eventTypes');
 
 export default function reducer(state = {
-    allContacts: null,
+    listUsers: null,
 }, action) {
     switch (action.type) {
-        case eventTypes.getContacts: {
-            return {...state, allContacts: action.payload}
+        case eventTypes.userList: {
+            return {...state, listUsers: action.payload}
         }
         default: {
             return state

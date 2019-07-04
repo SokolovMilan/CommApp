@@ -10,6 +10,8 @@ import SearchResults from "./SearchResults";
 import ContactDetails from "./ContactDetails";
 import ConversationDetails from "./ConversationDetails";
 import Chat from "./Chat";
+import AddUser from "./AddUser";
+import Default from "./DefaultChatScreen";
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -59,10 +61,24 @@ class HomePage extends Component {
         let convDet = document.getElementById("convers-det");
         let chat = document.getElementById("chat");
         let contDet = document.getElementById("cont-det");
+        let addUser = document.getElementById("add-user");
+        let defaultScreen = document.getElementById("default-screen");
 
+        if(defaultScreen.style.display == 'block'){
+            chat.style.visibility = 'hidden';
+        }
+        if(convDet.style.display == 'block'){
+            chat.style.visibility = 'visible';
+            convDet.style.display = 'none';
+        }
+        if(contDet.style.display == 'block'){
+            chat.style.visibility = 'visible';
+            contDet.style.display = 'none';
+        }
+
+        addUser.style.display = 'none';
         contDet.style.display = 'none';
         convDet.style.display = 'none';
-        chat.style.visibility = 'visible';
         contactImg.style.borderBottom = '1px solid red';
         chatImg.style.borderBottom = 'none';
 
@@ -87,10 +103,24 @@ class HomePage extends Component {
         let convDet = document.getElementById("convers-det");
         let chat = document.getElementById("chat");
         let contDet = document.getElementById("cont-det");
+        let addUser = document.getElementById("add-user");
+        let defaultScreen = document.getElementById("default-screen");
 
+        if(defaultScreen.style.display == 'block'){
+            chat.style.visibility = 'hidden';
+        }
+        if(convDet.style.display == 'block'){
+            chat.style.visibility = 'visible';
+            convDet.style.display = 'none';
+        }
+        if(contDet.style.display == 'block'){
+            chat.style.visibility = 'visible';
+            contDet.style.display = 'none';
+        }
+
+        addUser.style.display = 'none';
         contDet.style.display = 'none';
         convDet.style.display = 'none';
-        chat.style.visibility = 'visible';
         result.style.display = 'none';
         contact.style.display = 'none';
         convers.style.display = 'block';
@@ -109,10 +139,24 @@ class HomePage extends Component {
         let convDet = document.getElementById("convers-det");
         let chat = document.getElementById("chat");
         let contDet = document.getElementById("cont-det");
+        let addUser = document.getElementById("add-user");
+        let defaultScreen = document.getElementById("default-screen");
 
+        if(defaultScreen.style.display == 'block'){
+            chat.style.visibility = 'hidden';
+        }
+        if(convDet.style.display == 'block'){
+            chat.style.visibility = 'visible';
+            convDet.style.display = 'none';
+        }
+        if(contDet.style.display == 'block'){
+            chat.style.visibility = 'visible';
+            contDet.style.display = 'none';
+        }
+
+        addUser.style.display = 'none';
         contDet.style.display = 'none';
         convDet.style.display = 'none';
-        chat.style.visibility = 'visible';
         contact.style.display = 'block';
         convers.style.display = 'none';
         result.style.display = 'none';
@@ -170,7 +214,10 @@ class HomePage extends Component {
                             <div className="right-chat" id="right-chat">
                                 <ContactDetails selectedUser={this.state.selectedUser}/>
                                 <ConversationDetails selectedConversation={this.state.selectedConversation}/>
+                                <AddUser />
+                                <Default/>
                                 <Chat />
+
                             </div>
                         </div>
                     </div>

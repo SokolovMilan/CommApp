@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
 import {connect} from "react-redux";
 import history from '../util/history';
-import {getContacts} from "../actions/contacts";
 import {ShowImage} from "./Functions/functions";
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        getContacts: () => dispatch(getContacts()),
+
     }
 };
 const mapStateToProps = (state) => {
     return {
-        contacts: state.contactsReducer.allContacts,
+        contacts: state.contactsReducer.listUsers,
     };
 };
 const imageSrc = require('./Functions/imageSrc');
@@ -27,7 +26,7 @@ class ContactsDetails extends Component {
     }
 
     componentDidMount(){
-        this.props.getContacts();
+
     }
 
     backToChat(){
@@ -46,11 +45,11 @@ class ContactsDetails extends Component {
                 <p/>
                 <ShowImage src={imageSrc.user3Icon} width="50px"/>
                 <p/>
-                Name: {this.props.selectedUser.name}
+                User Id: {(this.props.contacts != null)
+                ? this.props.selectedUser
+                : console.log('no contacts')
+                }
                 <p/>
-                Email: {this.props.selectedUser.email}
-                <p/>
-                Phone: {this.props.selectedUser.phone}
                 <p/>
                 <button onClick={this.backToChat}>GO BACK</button>
             </div>

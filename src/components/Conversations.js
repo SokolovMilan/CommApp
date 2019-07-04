@@ -1,18 +1,24 @@
 import React, { Component } from 'react';
 import {connect} from "react-redux";
 import history from '../util/history';
-import {getConversations, chooseChat} from "../actions/conversations";
 import {ShowImage} from "./Functions/functions";
+import {getChatDetails, makeChat, clearChat, selectedConversation} from "../actions/chat";
+import socketEmitFunctions from '../util/socketEmitFunctions';
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        getConversations: () => dispatch(getConversations()),
-        chooseChat: (item) => dispatch(chooseChat(item)),
+        selectedConversation: (data) => dispatch(selectedConversation(data)),
+        makeChat: (data) => dispatch(makeChat(data)),
+        getChatDetails: (data) => dispatch(getChatDetails(data)),
+        clearChat: () => dispatch(clearChat()),
+
     }
 };
 const mapStateToProps = (state) => {
     return {
-        conversations: state.conversationsReducer.allConversations,
+        conversations: state.contactsReducer.listUsers,
+        chatId: state.chatReducer.chatId,
+        selectedChat: state.chatReducer.selectedChat,
     };
 };
 const imageSrc = require('./Functions/imageSrc');
@@ -28,20 +34,30 @@ class Conversations extends Component {
         this.details = this.details.bind(this);
     }
 
-    componentDidMount(){
-        this.props.getConversations();
-    }
-
     chooseConversation(item){
-        console.log("choose conversation "+item.id);
+        //need action to load all chat text from backend
+
+        if(this.props.selectedChat != item) {
+            this.props.selectedConversation(item);
+            this.props.clearChat();
+            this.props.makeChat(item);
+        }
+
         let conDet = document.getElementById("convers-det");
         let chat = document.getElementById("chat");
+        let defaultScreen = document.getElementById("default-screen");
+
+        defaultScreen.style.display = 'none';
         conDet.style.display = 'none';
         chat.style.visibility = 'visible';
-        this.props.chooseChat(item);
+
     }
 
     details(item){
+        console.log(item);
+        //need chat id from API contact list from backend to send for details!!!!!
+        this.props.getChatDetails(this.props.chatId);
+
         let conDet = document.getElementById("convers-det");
         let chat = document.getElementById("chat");
         let rightchat = document.getElementById("right-chat");
@@ -53,13 +69,16 @@ class Conversations extends Component {
     }
 
     render() {
+        if(this.props.chatId != null){
+            socketEmitFunctions.notifyUserConnectedToChat(this.props.chatId);
+        }
         return (
             <div className="left-convers" id="convers">
                 <div className="favorites">
                     <div>Favorites:</div>
                 </div>
                 { (this.props.conversations != null) ?
-                    this.props.conversations.sort((a, b) => (a.username > b.username) ? 1 : -1).map((item, index) =>
+                    this.props.conversations.map((item, index) =>
                         <div className="list-cont" key={index}>
                             <div className="left-list" key={item.id}
                                  onClick={ () => {this.chooseConversation(item)}}>
@@ -68,11 +87,9 @@ class Conversations extends Component {
                                 </div>
                                 <div className="list-contacts">
                                     <div className="contact-name">
-                                        {item.username}
+                                        Chat beetwen you and user {item}
                                     </div>
-                                    <div className="contact-detail">
-                                        {item.name}
-                                    </div>
+
 
                                 </div>
                             </div>
